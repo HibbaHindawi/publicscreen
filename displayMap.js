@@ -6,15 +6,20 @@ function init(){
 window.addEventListener("load", init);
 
 function initMap(id) {
+    let zoomLevel = 16.75;
     myMap = L.map(id, {
-        zoomDelta: 1,
-        zoomSnap: 0.35,
-        zoomControl: false
-    }); //Ändra koordinater för att byta det som visas på kartan, sista värdet är zoom värdet, minska för att zooma ut och tvärtom
-    myMap.setView([56.89, 14.80], 14);
-
+        zoomControl: false,
+        attributionControl: false
+    }).setView([56.87921314865301, 14.806402631755892], zoomLevel);
+    
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 20,
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+        maxZoom: 29,
     }).addTo(myMap);
+
+    let cityBounds = L.latLngBounds(
+        L.latLng(56.875, 14.7975), // Southwest corner
+        L.latLng(56.8814, 14.812)  // Northeast corner
+    );
+    myMap.setMaxBounds(cityBounds);
+    myMap.setMinZoom(zoomLevel);
 }

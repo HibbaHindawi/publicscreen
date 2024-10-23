@@ -1,35 +1,67 @@
 <!DOCTYPE html>
 <html lang="sv">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Culture Adventure</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="index.js"></script>
     <script src="displayMap.js"></script>
+    <script src="info.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div id="filterMenu" class="filterMenu">
-        <a href="javascript:void(0)" id="closeBtn">&times;</a>
-        <a href="#">Filter:</a>
-        <a href="#">Alternativ</a>
-        <a href="#">Alternativ</a>
-        <a href="#">Alternativ</a>
-      </div>
+        <div class="button" id="closeBtn">&times;</div>
+        <h1>Filter</h1>
+        <h2>Kategori</h2>
+        <div id="categoryList">
+            
+        </div>
+        <h2>Pris och Betyg</h2>
+        <div>
+            <h3>Pris</h3>
+
+            <h3>Betyg</h3>
+            <input type="range">
+        </div>
+        <div class="button" id="resetBtn">Återställ Filter</div>
+    </div>
+    <div id="dimOverlay"></div>
     <main>
         <div id="list">
-            <div>
-                <a href="information.html"><button id="randomBtn">Slump</button></a>
-                <a href="search.html"><button>Sök</button></a>
-                <button id="filterBtn">Filter</button>
+            <div id="options">
+                <div class="button" id="randomBtn"><img src="images/dice.png" alt="random"></div>
+                <div class="button" id="filterBtn"><img src="images/cogwheel.png" alt="filter"></div>
             </div>
             <div id="sort">
-                <div id="feedbacksort">Feedback</div>
-                <button>Omvänd</button>
-                <button>Sortera</button>
+                <div id="feedbacksort"></div>
+                <ul id="sortingDivs">
+                    <li>
+                        <input type="radio" id="sortAlphabet" name="sortOptions" value="alphabet" onchange="sortOption()" checked>
+                        <label for="sortAlphabet">Alphabetical</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="sortPrice" name="sortOptions" value="price" onchange="sortOption()">
+                        <label for="sortPrice">Price</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="sortGrade" name="sortOptions" value="rating" onchange="sortOption()">
+                        <label for="sortGrade">Rating</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="sortDistance" name="sortOptions" value="distance" onchange="sortOption()">
+                        <label for="sortDistance">Distance</label>
+                    </li>
+                </ul>
+                <div id="sortDiv">
+                    <div class="button" id="sortBtn"><img src="images/sort.png" alt="sort"></div>
+                    <div class="button" id="reverseBtn" onclick="reverseList()"><img src="images/reverse.png" alt="reverse"></div>
+                </div>
             </div>
             <div id="test"></div>
         </div>
@@ -38,4 +70,5 @@
         </div>
     </main>
 </body>
+
 </html>

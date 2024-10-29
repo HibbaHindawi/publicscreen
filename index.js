@@ -12,8 +12,10 @@ let filterArray;
 let randomList = [];
 let newResult = [];
 let resetBtn;
-
-// https://smapi.lnu.se/api/?api_key=Q0wfRecE&controller=establishment&method=getreviews&id=2 hämta recenssioner
+const excludedIds = ['1', '2', '3', '4'];
+let newInfo;
+let markerMenu;
+let openBtn;
 
 function init() {
     testElem = document.querySelector("#test");
@@ -28,7 +30,15 @@ function init() {
     resetBtn = document.querySelector("#resetBtn");
     resetBtn.addEventListener("click", filterSettings);
     document.querySelector("#randomBtn").addEventListener("click", randomPage);
-
+    document.querySelector("#sortBtn").addEventListener("click", showSortList);
+    document.querySelector("#student_discount").addEventListener("click", filterSettings);
+    document.querySelector("#child_discount").addEventListener("click", filterSettings);
+    document.querySelector("#senior_discount").addEventListener("click", filterSettings);
+    markerMenu = document.querySelector("#markerDesc");
+    markerMenu.style.width = "400px";
+    document.querySelector("#closeBtnMarker").addEventListener("click", displayMarkerMenu);
+    openBtn = document.querySelector("#openBtn");
+    openBtn.addEventListener("click", displayMarkerMenu);
     getData();
 }
 window.addEventListener("load", init);
@@ -42,6 +52,7 @@ function getData() {
         .then(data => {
             const filtered_array = (data.payload).filter(place => place.name !== "Psykiatrihistoriskt museum");
             originalList = filtered_array.concat(places);
+            originalList = updateInfo(originalList);
             newResult = originalList;
             sortList(newResult, 'alphabet');
             displayData(originalList);
@@ -52,20 +63,48 @@ function getData() {
             console.error("det uppstod ett problem: " + error);
         });
 }
+function updateInfo(data) {
+    for (let i = 0; i < data.length; i++) {
+        if (!excludedIds.includes(data[i].id)) {
+            let newInfo = getReviews(data[i].id);
+            data[i].rating = parseFloat(newInfo.rating).toFixed(1);
+        }
+    }
+    return data;
+}
+
+function getReviews(id) {
+    return updatedInfo.find(place => place.id === id);
+}
 
 function displayData(data) {
     testElem.innerHTML = "";
-    for (let i = 0; i < data.length; i++) {
-        randomList.push(data[i].id);
-        let div = document.createElement("div");
-        let text = document.createElement("p");
-        text.innerText = data[i].description + " - " + data[i].name + " " + data[i].price_range + " " + data[i].rating;
-        div.appendChild(text);
-        div.id = data[i].id;
-        div.addEventListener("click", redirectPage);
-        testElem.appendChild(div);
+    if (data == 0) {
+        testElem.innerHTML = "<p id='errormsg'>Det finns inga resultat, testa byta filter.</p>";
+        feedbackElem.innerHTML = "Resultat: <b> 0 </b>";
     }
-    feedbackElem.innerHTML = "Resultat: <b>" + testElem.childNodes.length + "</b>";
+    else {
+        for (let i = 0; i < data.length; i++) {
+            randomList.push(data[i].id);
+            let div = document.createElement("div");
+            let title = document.createElement("p");
+            let image = document.createElement("img");
+            image.src = "images/" + data[i].description + ".png";
+            image.alt = data[i].description;
+            title.innerHTML = "<b>" + data[i].name + "</b><br>" + data[i].price_range + " kr";;
+            let ratingElem = document.createElement("div");
+            ratingElem.innerHTML = "<p>" + data[i].rating + "</p><img src='images/rating.png' alt='betyg'>";
+            title.id = "titleElem";
+            ratingElem.id = "ratingElem";
+            div.appendChild(image);
+            div.appendChild(title);
+            div.appendChild(ratingElem);
+            div.id = data[i].id;
+            div.addEventListener("click", redirectPage);
+            testElem.appendChild(div);
+        }
+        feedbackElem.innerHTML = "Resultat: <b>" + testElem.childNodes.length + "</b>";
+    }
 }
 
 function addFilterList() {
@@ -74,7 +113,7 @@ function addFilterList() {
         let cate = originalList[i].description;
         if (!filterArray.includes(cate)) {
             let div = document.createElement("div");
-            div.innerText = cate;
+            div.innerHTML = "<p>" + cate + "</p><img src=images/" + cate + ".png>";
             div.id = cate;
             div.addEventListener("click", filterSettings);
             filterArray.push(cate);
@@ -84,68 +123,127 @@ function addFilterList() {
 }
 
 function filterSettings() {
-    newResult = [];
-    testElem.innerHTML = "";
-    if (this.id !== "resetBtn") {
-        if (filteredList.includes(this.id)) {
-            for (let i = 0; i < filteredList.length; i++) {
-                if (filteredList[i] == this.id) {
-                    filteredList.splice(i, 1);
-                    this.classList.remove('active');
-                }
-            }
-        }
-        else {
-            filteredList.push(this.id);
-            this.classList.add('active');
-        }
-        for (let i = 0; i < originalList.length; i++) {
-            if (filteredList.includes(originalList[i].description)) {
-                newResult.push(originalList[i]);
-            }
-        }
-        markers.clearLayers();
-        for (let i = 0; i < newResult.length; i++) {
-            let lat;
-            let lng;
-            let button = document.createElement("a");
-            let currentData = newResult[i];
-            button.href = "information.html?id=" + currentData.id;
-            button.innerText = "Läs mer här";
-            if (currentData.name == "Palladium") {
-                lat = 56.878800803815544;
-                lng = 14.806743264198305;
-            }
-            else if (currentData.name == "Filmstaden Växjö") {
-                lat = 56.878878604985736;
-                lng = 14.797926843166353;
-            }
-            else {
-                lat = currentData.lat;
-                lng = currentData.lng;
-            }
-            let marker = L.marker([lat, lng]);
-            marker.bindPopup("<b>" + currentData.name + "</b><br> Typ: " + currentData.description + "<br>" + button.outerHTML);
-            markers.addLayer(marker);
-        }
-        markers.addTo(myMap);
+    if (this.classList.contains("disabled")) {
+        return;
     }
     else {
-        const divs = categoryMenu.children;
-        for (let i = 0; i < divs.length; i++) {
-            divs[i].classList.remove('active');
+        newResult = [];
+        testElem.innerHTML = "";
+        if (this.id !== "resetBtn") {
+            if (filteredList.includes(this.id)) {
+                for (let i = 0; i < filteredList.length; i++) {
+                    if (filteredList[i] == this.id) {
+                        filteredList.splice(i, 1);
+                        this.classList.remove('active');
+                    }
+                }
+            }
+            else {
+                filteredList.push(this.id);
+                this.classList.add('active');
+            }
+            for (let i = 0; i < originalList.length; i++) {
+                if (filteredList.includes(originalList[i].description)) {
+                    newResult.push(originalList[i]);
+                }
+            }
+            if (newResult.length == "0") {
+                newResult = originalList;
+            }
+            if (filteredList.includes("student_discount")) {
+                newResult = newResult.filter(item => item.student_discount === "Y");
+            }
+            if (filteredList.includes("child_discount")) {
+                newResult = newResult.filter(item => item.child_discount === "Y");
+            }
+            if (filteredList.includes("senior_discount")) {
+                newResult = newResult.filter(item => item.senior_discount === "Y");
+            }
+            markers.clearLayers();
+            for (let i = 0; i < newResult.length; i++) {
+                let lat;
+                let lng;
+                let button = document.createElement("a");
+                let currentData = newResult[i];
+                button.href = "information.html?id=" + currentData.id;
+                button.innerText = "Läs mer här";
+                if (currentData.name == "Palladium") {
+                    lat = 56.878800803815544;
+                    lng = 14.806743264198305;
+                }
+                else if (currentData.name == "Filmstaden Växjö") {
+                    lat = 56.878878604985736;
+                    lng = 14.797926843166353;
+                }
+                else {
+                    lat = currentData.lat;
+                    lng = currentData.lng;
+                }
+                let marker;
+                if (currentData.description == "Konsthall") {
+                    marker = L.marker([lat, lng], { icon: konsthallMarker });
+                }
+                else if (currentData.description == "Museum") {
+                    marker = L.marker([lat, lng], { icon: museumMarker });
+                }
+                else if (currentData.description == "Konserthus") {
+                    marker = L.marker([lat, lng], { icon: konserthusMarker });
+                }
+                else if (currentData.description == "Kyrka") {
+                    marker = L.marker([lat, lng], { icon: kyrkaMarker });
+                }
+                else if (currentData.description == "Biograf") {
+                    marker = L.marker([lat, lng], { icon: biografMarker });
+                }
+                else if (currentData.description == "Teater") {
+                    marker = L.marker([lat, lng], { icon: teaterMarker });
+                }
+                else {
+                    marker = L.marker([lat, lng], { icon: bibliotekMarker });
+                }
+                var redirectUrl = "information.html?id=" + currentData.id;
+                var placeName = currentData.name;
+                if (placeName.includes(" ")) {
+                    placeName = placeName.replace(" ", "<br>");
+                }
+                marker.bindPopup("<a href='" + redirectUrl + "' style='text-decoration: none; color: black; max-width: 140px; display: block; word-wrap: break-word;'><strong>" + placeName + "</strong><br><p class='link'><u>Läs mer</u></p></a>");
+                markers.addLayer(marker);
+                var popupContainer = document.querySelector('.leaflet-popup-content-wrapper');
+                if (popupContainer) {
+                    popupContainer.style.maxWidth = '135px'; // Adjust as needed
+                    popupContainer.style.whiteSpace = 'normal'; // Allow text to wrap
+                }
+            }
+            markers.addTo(myMap);
         }
-        filteredList = [];
-        addMarkers();
+        else {
+            const divs = categoryMenu.children;
+            const rabatterDiv = document.querySelectorAll("#discountsList div");
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].classList.remove('active');
+            }
+            for (let i = 0; i < rabatterDiv.length; i++) {
+                rabatterDiv[i].classList.remove('active');
+            }
+            filteredList = [];
+            addMarkers();
+        }
+        if (newResult.length == "0" && this.id == "resetBtn") {
+            newResult = originalList
+            resetBtn.style.backgroundColor = "white";
+            resetBtn.classList.add("disabled");
+        }
+        else if (newResult.length == "0" || filteredList.length == "0") {
+            resetBtn.style.backgroundColor = "gray";
+            resetBtn.classList.remove("disabled");
+            displayData(0);
+        }
+        else {
+            resetBtn.style.backgroundColor = "gray";
+            resetBtn.classList.remove("disabled");
+        }
+        sortOption();
     }
-    if (newResult.length == "0") {
-        newResult = originalList;
-        resetBtn.style.backgroundColor = "white";
-    }
-    else{
-        resetBtn.style.backgroundColor = "gray";
-    }
-    sortOption();
 }
 function sortOption() {
     const selectedMethod = document.querySelector('input[name="sortOptions"]:checked').value;
@@ -174,9 +272,40 @@ function addMarkers() {
             lat = currentData.lat;
             lng = currentData.lng;
         }
-        let marker = L.marker([lat, lng]);
-        marker.bindPopup("<b>" + currentData.name + "</b><br> Typ: " + currentData.description + "<br>" + button.outerHTML);
-        markers.addLayer(marker);
+        let marker;
+        if (currentData.description == "Konsthall") {
+            marker = L.marker([lat, lng], { icon: konsthallMarker });
+        }
+        else if (currentData.description == "Museum") {
+            marker = L.marker([lat, lng], { icon: museumMarker });
+        }
+        else if (currentData.description == "Konserthus") {
+            marker = L.marker([lat, lng], { icon: konserthusMarker });
+        }
+        else if (currentData.description == "Kyrka") {
+            marker = L.marker([lat, lng], { icon: kyrkaMarker });
+        }
+        else if (currentData.description == "Biograf") {
+            marker = L.marker([lat, lng], { icon: biografMarker });
+        }
+        else if (currentData.description == "Teater") {
+            marker = L.marker([lat, lng], { icon: teaterMarker });
+        }
+        else {
+            marker = L.marker([lat, lng], { icon: bibliotekMarker });
+        }
+        var redirectUrl = "information.html?id=" + currentData.id;
+                var placeName = currentData.name;
+                if (placeName.includes(" ")) {
+                    placeName = placeName.replace(" ", "<br>");
+                }
+                marker.bindPopup("<a href='" + redirectUrl + "' style='text-decoration: none; color: black; max-width: 140px; display: block; word-wrap: break-word;'><strong>" + placeName + "</strong><br><p class='link'><u>Läs mer</u></p></a>");
+                markers.addLayer(marker);
+                var popupContainer = document.querySelector('.leaflet-popup-content-wrapper');
+                if (popupContainer) {
+                    popupContainer.style.maxWidth = '135px'; // Adjust as needed
+                    popupContainer.style.whiteSpace = 'normal'; // Allow text to wrap
+                }
     }
     markers.addTo(myMap);
 }
@@ -213,6 +342,17 @@ function displayFilterMenu() {
         dimElem.style.width = "75%";
     }
 }
+function displayMarkerMenu(){
+    let markerWidth = "400px";
+    if (markerMenu.style.width == markerWidth) {
+        markerMenu.style.width = "0";
+        openBtn.style.display = "block";
+    }
+    else {
+        markerMenu.style.width = markerWidth;
+        openBtn.style.display = "none";
+    }
+}
 
 function sortList(sortedList, method) {
     switch (method) {
@@ -220,6 +360,14 @@ function sortList(sortedList, method) {
             sortedList.sort((a, b) => {
                 const nameA = a.name.toLowerCase();
                 const nameB = b.name.toLowerCase();
+                return nameA.localeCompare(nameB);
+            });
+            break;
+
+        case 'category':
+            sortedList.sort((a, b) => {
+                const nameA = a.description.toLowerCase();
+                const nameB = b.description.toLowerCase();
                 return nameA.localeCompare(nameB);
             });
             break;
@@ -235,7 +383,6 @@ function sortList(sortedList, method) {
                 const priceA = getLowerPrice(a.price_range);
                 const priceB = getLowerPrice(b.price_range);
 
-                // Treat the price '0' as definitely lower than any range starting from '0'
                 if (priceA === 0 && b.price_range.includes('-')) {
                     return -1;
                 }
@@ -250,33 +397,22 @@ function sortList(sortedList, method) {
             sortedList.sort((a, b) => b.rating - a.rating);
             break;
 
-        case 'distance':
-            const userPosition = { latitude: 51.5074, longitude: -0.1278 }; //ändra till aktuell position
-            const haversineDistance = (lat1, lon1, lat2, lon2) => {
-                const R = 6371;
-                const dLat = (lat2 - lat1) * (Math.PI / 180);
-                const dLon = (lon2 - lon1) * (Math.PI / 180);
-                const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-                    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-                return R * c;
-            };
-
-            sortedList.sort((a, b) => {
-                const distanceA = haversineDistance(userPosition.latitude, userPosition.longitude, a.lat, a.lng);
-                const distanceB = haversineDistance(userPosition.latitude, userPosition.longitude, b.lat, b.lng);
-                return distanceA - distanceB;
-            });
-            break;
-
         default:
             console.log('Unknown sorting method');
             break;
     }
     return sortedList;
 }
-function reverseList(){
+function reverseList() {
     newResult = newResult.reverse();
     displayData(newResult);
+}
+
+function showSortList() {
+    let list = document.querySelector("#sortingDivs");
+    if (list.style.visibility === 'visible') {
+        list.style.visibility = 'hidden';
+    } else {
+        list.style.visibility = 'visible';
+    }
 }

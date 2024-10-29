@@ -7,25 +7,36 @@ html, body {
     height: 100%;
 }
 
+body {
+    padding-top: 35px;
+    background-color: whitesmoke;
+}
+
 main {
-    height: 89%;
-    display: grid;
-    grid-template-columns: 65% auto;
+    display: flex;
+    align-items: center;
+    height: 100%;
     width: 90%;
     margin: 0 auto;
     gap: 10px;
 }
-
+h2{
+    font-size: 34px;
+}
 main #mainArea {
     border: black solid 1px;
     border-radius: 5px;
     overflow-y: auto;
     padding-top: 20px;
+    height: 85%;
+    width: 70%;
+    background-color: rgb(255, 255, 255);
 }
-main #mainArea p{
+
+main #mainArea p {
     width: 90%;
     margin: 0 auto;
-    font-size: 22px;
+    font-size: 28px;
 }
 
 main #mainArea #otherDiv {
@@ -38,15 +49,17 @@ h1 {
     margin-top: 0;
     padding-top: 20px;
     margin-bottom: 10px;
+    font-size: 50px;
 }
 
 main #sideArea {
-    height: 100%;
+    height: 85%;
+    width: 30%;
 }
 
 #map {
     width: 100%;
-    height: calc(100% - 320px);
+    height: calc(100% - 380px);
     margin: 0 auto 20px;
     border: black solid 1px;
     border-radius: 5px;
@@ -54,15 +67,17 @@ main #sideArea {
 
 #sideInfo {
     border: black solid 1px;
-    height: 300px;
-    font-size: 20px;
+    height: 360px;
+    font-size: 30px;
     overflow-y: auto;
     border-radius: 5px;
+    background-color: rgb(255, 255, 255);
 }
 
 #sideInfo h2 {
     text-align: center;
     margin: 15px 0 10px;
+    font-size: 42px;
 }
 
 #sideInfo div {
@@ -88,11 +103,11 @@ main #sideArea {
     position: absolute;
     top: 10px;
     left: 10px;
-    font-size: 26px;
+    font-size: 42px;
     background-color: rgb(255, 255, 255);
     text-decoration: none;
     color: black;
-    padding: 10px;
+    padding: 20px;
     border: black solid 1px;
     border-radius: 5px;
 }
@@ -102,7 +117,7 @@ main #sideArea {
     grid-auto-flow: column;
     overflow-x: auto;
     width: 100%;
-    height: 300px;
+    height: 350px;
     gap: 10px;
     margin-bottom: 20px;
     border: black solid 1px;
@@ -114,7 +129,8 @@ main #sideArea {
     font-size: 18px;
     height: 95%;
     box-sizing: border-box;
-    border: 1px solid rgb(0, 0, 0); /* Optional: Add a separator between reviews */
+    border: 1px solid rgb(0, 0, 0);
+    /* Optional: Add a separator between reviews */
     border-radius: 5px;
     background-color: whitesmoke;
     overflow-y: auto;
@@ -122,21 +138,65 @@ main #sideArea {
     margin-bottom: 5px;
     padding: 10px 5px 5px;
 }
-#reviewsDiv .review :first-child{
-    font-size: 20px;
-    font-weight: bold;
-}
-#Discounts{
+
+#Discounts {
     display: grid;
     grid-auto-flow: column;
     gap: 20px;
     width: 80%;
+    margin: 0 auto;
 }
-#Discounts div{
+
+main #mainArea #otherDiv #Discounts div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     border: black solid 1px;
-    width: 180px;
-    font-size: 20px;
     text-align: center;
+    width: 200px;
     padding: 10px 0;
     border-radius: 5px;
+}
+main #mainArea #otherDiv #Discounts div p{
+    font-size: 30px;
+    width: unset;
+    margin: unset;
+    margin-left: auto;
+}
+
+main #mainArea #otherDiv #Discounts div img {
+    height: auto;
+    width: 40px;
+    margin-right: 15px;
+    margin-left: auto;
+}
+
+.titleText {
+    display: flex;
+    flex-direction: row;
+    margin: 0 20px 10px;
+    border-bottom: black solid 1px;
+}
+
+main #mainArea .ratingText, main #mainArea .reviewTitle {
+    width: unset;
+    margin: 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+main #mainArea .ratingText {
+    margin-left: auto;
+}
+
+main #mainArea img {
+    width: 35px;
+    margin-left: 5px;
+}
+
+main #mainArea .reviewText {
+    font-size: 26px;
+}
+main #mainArea #otherDiv #price, main #mainArea #otherDiv #grade{
+    font-size: 36px;
 }

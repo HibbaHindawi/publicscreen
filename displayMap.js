@@ -1,12 +1,12 @@
 let myMap;
 function init(){
-    testElem= document.querySelector("#test");
+    testElem = document.querySelector("#test");
     initMap("map");
 }
 window.addEventListener("load", init);
 
 function initMap(id) {
-    let zoomLevel = 16.75;
+    let zoomLevel = 16.5;
     myMap = L.map(id, {
         zoomControl: false,
         attributionControl: false
@@ -17,9 +17,11 @@ function initMap(id) {
     }).addTo(myMap);
 
     let cityBounds = L.latLngBounds(
-        L.latLng(56.875, 14.7975), // Southwest corner
-        L.latLng(56.8814, 14.812)  // Northeast corner
+        L.latLng(56.8755, 14.797), // Southwest corner
+        L.latLng(56.88155, 14.813)  // Northeast corner
     );
     myMap.setMaxBounds(cityBounds);
     myMap.setMinZoom(zoomLevel);
+    let marker = L.marker([56.878938, 14.804549], { icon: userPosition });
+    marker.addTo(myMap);
 }

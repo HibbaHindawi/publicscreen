@@ -39,7 +39,7 @@ let places = [
     },
     {
         name: "Galleri Sigma",
-        description: "Konstgalleri",
+        description: "Konsthall",
         lat: 56.878024417014686,
         lng: 14.81025964021683,
         price_range: "100-2000",

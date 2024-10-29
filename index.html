@@ -11,6 +11,7 @@
     <script src="index.js"></script>
     <script src="displayMap.js"></script>
     <script src="info.js"></script>
+    <script src="icons.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -22,40 +23,40 @@
         <div id="categoryList">
             
         </div>
-        <h2>Pris och Betyg</h2>
-        <div>
-            <h3>Pris</h3>
-
-            <h3>Betyg</h3>
-            <input type="range">
+        <h2>Rabatter</h2>
+        <div id="discountsList">
+            <div id="student_discount">Student</div>
+            <div id="child_discount">Barn</div>
+            <div id="senior_discount">Pensionär</div>
         </div>
-        <div class="button" id="resetBtn">Återställ Filter</div>
+        <div class="button disabled" id="resetBtn">Återställ Filter</div>
     </div>
     <div id="dimOverlay"></div>
     <main>
         <div id="list">
             <div id="options">
                 <div class="button" id="randomBtn"><img src="images/dice.png" alt="random"></div>
-                <div class="button" id="filterBtn"><img src="images/cogwheel.png" alt="filter"></div>
+                <div class="button" id="filterBtn"><img src="images/filter.png" alt="filter"></div>
             </div>
             <div id="sort">
                 <div id="feedbacksort"></div>
                 <ul id="sortingDivs">
+                    <li id="sortText">Sortera resultat: </li>
                     <li>
                         <input type="radio" id="sortAlphabet" name="sortOptions" value="alphabet" onchange="sortOption()" checked>
-                        <label for="sortAlphabet">Alphabetical</label>
+                        <label for="sortAlphabet">Alfabetisk</label>
+                    </li>
+                    <li>
+                        <input type="radio" id="sortCategory" name="sortOptions" value="category" onchange="sortOption()">
+                        <label for="sortCategory">Kategori</label>
                     </li>
                     <li>
                         <input type="radio" id="sortPrice" name="sortOptions" value="price" onchange="sortOption()">
-                        <label for="sortPrice">Price</label>
+                        <label for="sortPrice">Pris</label>
                     </li>
                     <li>
                         <input type="radio" id="sortGrade" name="sortOptions" value="rating" onchange="sortOption()">
-                        <label for="sortGrade">Rating</label>
-                    </li>
-                    <li>
-                        <input type="radio" id="sortDistance" name="sortOptions" value="distance" onchange="sortOption()">
-                        <label for="sortDistance">Distance</label>
+                        <label for="sortGrade">Betyg</label>
                     </li>
                 </ul>
                 <div id="sortDiv">
@@ -66,6 +67,19 @@
             <div id="test"></div>
         </div>
         <div>
+            <div id="openBtn">&larr; <p>Teckenförklaring</p></div>
+            <div id="markerDesc">
+                <div class="button" id="closeBtnMarker">&times;</div>
+                <h2 id="legend">Markör Förklaring</h2>
+                <div><img src="images/userPosition.png" alt="User position"><p>Du är här</p></div>
+                <div><img src="images/teaterMarker.png" alt="teater position"><p>Teater</p></div>
+                <div><img src="images/kyrkaMarker.png" alt="kyrka position"><p>Kyrka</p></div>
+                <div><img src="images/museumMarker.png" alt="museum position"><p>Museum</p></div>
+                <div><img src="images/konsthallMarker.png" alt="konsthall position"><p>Konsthall</p></div>
+                <div><img src="images/konserthusMarker.png" alt="konserthus position"><p>Konserthus</p></div>
+                <div><img src="images/biografMarker.png" alt="biograf position"><p>Biograf</p></div>
+                <div><img src="images/bibliotekMarker.png" alt="bibliotek position"><p>Bibliotek</p></div>
+            </div>
             <div id="map"></div>
         </div>
     </main>

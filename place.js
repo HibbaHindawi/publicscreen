@@ -52,7 +52,7 @@ function displayData(data) {
         abstract = newInfo.abstract;
         rating = parseFloat(newInfo.rating).toFixed(1);
     }
-    else{
+    else {
         abstract = data.abstract;
         rating = parseFloat(data.rating).toFixed(1);
     }
@@ -71,43 +71,47 @@ function displayData(data) {
         price += "kr";
     }
     otherDiv.id = "otherDiv";
-    let h2Pris = document.createElement("h2");
-    h2Pris.innerText = "Pris och Rabatter";
+    let h2price = document.createElement("h2");
+    h2price.innerText = "Pris och Betyg";
+    otherDiv.appendChild(h2price);
+    let priceEle = document.createElement("p");
+    priceEle.innerHTML = "<img src='images/price.png'>" + price;
+    priceEle.id = "price";
+    otherDiv.appendChild(priceEle);
+    let gradeEle = document.createElement("p");
+    gradeEle.innerHTML = "<img src='images/rating.png'>" + rating;
+    gradeEle.id = "grade";
+    otherDiv.appendChild(gradeEle);
+
+
+    let h2Rabatt = document.createElement("h2");
+    h2Rabatt.innerText = "Rabatter";
     let discountsDiv = document.createElement("div");
     discountsDiv.id = "Discounts";
-    if(student_discount == "Y"){
-        discountsDiv.innerHTML = "<div id=student>Student: Yes </div>";
+    if (student_discount == "Y") {
+        discountsDiv.innerHTML = "<div id=student><p>Student: </p><img src='images/check.png'></div>";
     }
-    else{
-        discountsDiv.innerHTML = "<div id=student>Student: No </div>";
+    else {
+        discountsDiv.innerHTML = "<div id=student><p>Student: </p><img src='images/cross.png'></div>";
     }
-    if(child_discount == "Y"){
-        discountsDiv.innerHTML += "<div id=child>Barn: Yes </div>";
+    if (child_discount == "Y") {
+        discountsDiv.innerHTML += "<div id=child><p>Barn: </p><img src='images/check.png'></div>";
     }
-    else{
-        discountsDiv.innerHTML += "<div id=child>Barn: No </div>";
+    else {
+        discountsDiv.innerHTML += "<div id=child><p>Barn: </p><img src='images/cross.png'></div>";
     }
-    if(senior_discount == "Y"){
-        discountsDiv.innerHTML += "<div id=senior>Pensionär: Yes </div>";
+    if (senior_discount == "Y") {
+        discountsDiv.innerHTML += "<div id=senior><p>Pensionär: </p><img src='images/check.png'></div>";
     }
-    else{
-        discountsDiv.innerHTML += "<div id=senior>Pensionär: No </div>";
+    else {
+        discountsDiv.innerHTML += "<div id=senior><p>Pensionär: </p><img src='images/cross.png'></div>";
     }
-    otherDiv.appendChild(h2Pris);
-
-    let priceEle = document.createElement("p");
-    priceEle.innerText = price;
-    otherDiv.appendChild(priceEle);
+    otherDiv.appendChild(h2Rabatt);
     otherDiv.appendChild(discountsDiv);
 
-    let h2Grade = document.createElement("h2");
-    h2Grade.innerText = "Betyg och recensioner";
-    otherDiv.appendChild(h2Grade);
-    
-
-    let gradeEle = document.createElement("p");
-    gradeEle.innerText = rating;
-    otherDiv.appendChild(gradeEle);
+    let h2reviews = document.createElement("h2");
+    h2reviews.innerText = "Recensioner";
+    otherDiv.appendChild(h2reviews);
 
     let reviewsEle = document.createElement("div");
     reviewsEle.id = "reviewsDiv";
@@ -115,7 +119,7 @@ function displayData(data) {
         for (let i = 0; i < newInfo.reviews.length; i++) {
             let review = newInfo.reviews[i];
             let reviewDiv = document.createElement("div");
-            reviewDiv.innerHTML = "<p>" + review.username + " - " + review.rating + "</p><p>" + review.comment + "</p>";
+            reviewDiv.innerHTML = "<div class='titleText'><p class='reviewTitle'>" + review.username + "</p><p class='ratingText'>" + review.rating +"</p><img src='images/rating.png' alt='betyg'></div><p class='reviewText'>" + review.comment + "</p>";
             reviewDiv.classList.add("review");
             reviewsEle.appendChild(reviewDiv);
         }
@@ -124,7 +128,7 @@ function displayData(data) {
         for (let i = 0; i < data.reviews.length; i++) {
             let review = data.reviews[i];
             let reviewDiv = document.createElement("div");
-            reviewDiv.innerHTML = "<p>" + review.username + " - " + review.rating + "</p><p>" + review.comment + "</p>";
+            reviewDiv.innerHTML = "<div class='titleText'><p class='reviewTitle'>" + review.username + "</p><p class='ratingText'>" + review.rating +"</p><img src='images/rating.png' alt='betyg'></div><p class='reviewText'>" + review.comment + "</p>";
             reviewDiv.classList.add("review");
             reviewsEle.appendChild(reviewDiv);
         }
@@ -132,22 +136,22 @@ function displayData(data) {
     otherDiv.appendChild(reviewsEle);
     mainAreaElem.appendChild(otherDiv);
     let phone_number;
-    if(data.name === "Filmstaden Växjö"){
+    if (data.name === "Filmstaden Växjö") {
         phone_number = "08-562 600 00";
     }
-    else if(data.name === "Palladium"){
+    else if (data.name === "Palladium") {
         phone_number = "070-567 10 07";
     }
-    else{
+    else {
         phone_number = data.phone_number;
     }
     contactDiv = document.createElement("div");
     contactDiv.innerHTML = "<h2>Kontaktinformation</h2><div><p><img src='images/address.png'>" + data.address + "</p><p><img src='images/website.png'>" + data.website + "</p><p><img src='images/phone.png'>" + phone_number + "</p></div>";
     sideAreaElem.appendChild(contactDiv);
-    displayMap();
+    displayMap(data);
 }
 
-function displayMap() {
+function displayMap(data) {
     let zoomLevel = 17.5;
     let lat = placeData.lat;
     let lng = placeData.lng;
@@ -172,6 +176,27 @@ function displayMap() {
         maxZoom: 29,
     }).addTo(myMap);
 
-    let marker = L.marker([lat, lng]);
+    let marker;
+    if (data.description == "Konsthall") {
+        marker = L.marker([lat, lng], { icon: konsthallMarker });
+    }
+    else if (data.description == "Museum") {
+        marker = L.marker([lat, lng], { icon: museumMarker });
+    }
+    else if (data.description == "Konserthus") {
+        marker = L.marker([lat, lng], { icon: konserthusMarker });
+    }
+    else if (data.description == "Kyrka") {
+        marker = L.marker([lat, lng], { icon: kyrkaMarker });
+    }
+    else if (data.description == "Biograf") {
+        marker = L.marker([lat, lng], { icon: biografMarker });
+    }
+    else if (data.description == "Teater") {
+        marker = L.marker([lat, lng], { icon: teaterMarker });
+    }
+    else {
+        marker = L.marker([lat, lng], { icon: bibliotekMarker });
+    }
     marker.addTo(myMap);
 }

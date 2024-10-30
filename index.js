@@ -16,6 +16,9 @@ const excludedIds = ['1', '2', '3', '4'];
 let newInfo;
 let markerMenu;
 let openBtn;
+let sortBtn;
+let reverseBtn;
+let status;
 
 function init() {
     testElem = document.querySelector("#test");
@@ -30,7 +33,8 @@ function init() {
     resetBtn = document.querySelector("#resetBtn");
     resetBtn.addEventListener("click", filterSettings);
     document.querySelector("#randomBtn").addEventListener("click", randomPage);
-    document.querySelector("#sortBtn").addEventListener("click", showSortList);
+    sortBtn = document.querySelector("#sortBtn");
+    sortBtn.addEventListener("click", showSortList);
     document.querySelector("#student_discount").addEventListener("click", filterSettings);
     document.querySelector("#child_discount").addEventListener("click", filterSettings);
     document.querySelector("#senior_discount").addEventListener("click", filterSettings);
@@ -39,6 +43,8 @@ function init() {
     document.querySelector("#closeBtnMarker").addEventListener("click", displayMarkerMenu);
     openBtn = document.querySelector("#openBtn");
     openBtn.addEventListener("click", displayMarkerMenu);
+    reverseBtn = document.querySelector("#reverseBtn img");
+    reverseBtn.src = "images/reverse.png";
     getData();
 }
 window.addEventListener("load", init);
@@ -230,16 +236,25 @@ function filterSettings() {
         }
         if (newResult.length == "0" && this.id == "resetBtn") {
             newResult = originalList
-            resetBtn.style.backgroundColor = "white";
+            resetBtn.style.backgroundColor = "rgb(215, 215, 215)";
             resetBtn.classList.add("disabled");
+            resetBtn.style.color = "gray";
         }
-        else if (newResult.length == "0" || filteredList.length == "0") {
-            resetBtn.style.backgroundColor = "gray";
+        else if (newResult.length == "0") {
+            resetBtn.style.backgroundColor = "white";
+            resetBtn.style.color = "black";
             resetBtn.classList.remove("disabled");
             displayData(0);
         }
+        else if (filteredList.length == "0") {
+            newResult = originalList
+            resetBtn.style.backgroundColor = "rgb(215, 215, 215)";
+            resetBtn.classList.add("disabled");
+            resetBtn.style.color = "gray";
+        }
         else {
-            resetBtn.style.backgroundColor = "gray";
+            resetBtn.style.backgroundColor = "white";
+            resetBtn.style.color = "black";
             resetBtn.classList.remove("disabled");
         }
         sortOption();
@@ -248,6 +263,8 @@ function filterSettings() {
 function sortOption() {
     const selectedMethod = document.querySelector('input[name="sortOptions"]:checked').value;
     newResult = sortList(newResult, selectedMethod);
+    reverseBtn.src = "images/reverse.png";
+    status = "unreversed";
     displayData(newResult);
 }
 
@@ -295,17 +312,17 @@ function addMarkers() {
             marker = L.marker([lat, lng], { icon: bibliotekMarker });
         }
         var redirectUrl = "information.html?id=" + currentData.id;
-                var placeName = currentData.name;
-                if (placeName.includes(" ")) {
-                    placeName = placeName.replace(" ", "<br>");
-                }
-                marker.bindPopup("<a href='" + redirectUrl + "' style='text-decoration: none; color: black; max-width: 140px; display: block; word-wrap: break-word;'><strong>" + placeName + "</strong><br><p class='link'><u>Läs mer</u></p></a>");
-                markers.addLayer(marker);
-                var popupContainer = document.querySelector('.leaflet-popup-content-wrapper');
-                if (popupContainer) {
-                    popupContainer.style.maxWidth = '135px'; // Adjust as needed
-                    popupContainer.style.whiteSpace = 'normal'; // Allow text to wrap
-                }
+        var placeName = currentData.name;
+        if (placeName.includes(" ")) {
+            placeName = placeName.replace(" ", "<br>");
+        }
+        marker.bindPopup("<a href='" + redirectUrl + "' style='text-decoration: none; color: black; max-width: 140px; display: block; word-wrap: break-word;'><strong>" + placeName + "</strong><br><p class='link'><u>Läs mer</u></p></a>");
+        markers.addLayer(marker);
+        var popupContainer = document.querySelector('.leaflet-popup-content-wrapper');
+        if (popupContainer) {
+            popupContainer.style.maxWidth = '135px'; // Adjust as needed
+            popupContainer.style.whiteSpace = 'normal'; // Allow text to wrap
+        }
     }
     markers.addTo(myMap);
 }
@@ -329,20 +346,23 @@ function redirectPage() {
 
 function displayFilterMenu() {
     let filterWidth = "30%";
+    let filterBtnImg = filterBtn.children[0];
     if (filterMenuElem.style.width == filterWidth) {
         filterMenuElem.style.width = "0";
         filterMenuElem.style.borderWidth = "0px";
         dimElem.style.opacity = "0";
         dimElem.style.width = "0";
+        filterBtnImg.src = "images/filter.png";
     }
     else {
         filterMenuElem.style.width = filterWidth;
         filterMenuElem.style.borderWidth = "1px";
         dimElem.style.opacity = "0.5";
-        dimElem.style.width = "75%";
+        dimElem.style.width = "100%";
+        filterBtnImg.src = "images/filteractive.png";
     }
 }
-function displayMarkerMenu(){
+function displayMarkerMenu() {
     let markerWidth = "400px";
     if (markerMenu.style.width == markerWidth) {
         markerMenu.style.width = "0";
@@ -404,15 +424,27 @@ function sortList(sortedList, method) {
     return sortedList;
 }
 function reverseList() {
-    newResult = newResult.reverse();
+    if(status == "reversed"){
+        reverseBtn.src = "images/reverse.png";
+        status = "unreversed";
+        newResult = newResult.reverse();
+    }
+    else{
+        reverseBtn.src = "images/reverseactive.png";
+        status = "reversed";
+        newResult = newResult.reverse();
+    }
     displayData(newResult);
 }
 
 function showSortList() {
     let list = document.querySelector("#sortingDivs");
+    let sortBtnimg = sortBtn.children[0];
     if (list.style.visibility === 'visible') {
         list.style.visibility = 'hidden';
+        sortBtnimg.src = "images/sort.png";
     } else {
         list.style.visibility = 'visible';
+        sortBtnimg.src = "images/sortactive.png";
     }
 }

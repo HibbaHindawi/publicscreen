@@ -136,7 +136,7 @@ let places = [
             },
             {
                 rating: "2",
-                username: "Johan Anderson Nilsson",
+                username: "Johan Anderson",
                 comment: "Otroligt små stolar och inte bekväma. O då är jag ändå en vuxen i normal storlek. Efter en timme såg jag stjärnor flimmra framför mina ögonen, och de va inte pga av legendarerna på scen ( shout out till historiepodden), utan för den totala syrebristen som va i lokalen. Va med nöd och näppe som jag och mina kamrater lyckades ta oss ut efter föreställningen, och kunde åter känna denna livskraft många kallar luft. Plus till dom som jobba där. Dom va hjälpsamma och trevliga"
             },
             {
@@ -224,34 +224,6 @@ let updatedInfo = [
                 rating: "2",
                 username: "Birgitta Persson",
                 comment: "Mycket märklig konst idag videokonst!???"
-            }
-        ]
-    },
-    {
-        name: "",
-        id: "",
-        abstract: "",
-        rating: "",
-        reviews: [
-            {
-                rating: "",
-                username: "",
-                comment: ""
-            },
-            {
-                rating: "",
-                username: "",
-                comment: ""
-            },
-            {
-                rating: "",
-                username: "",
-                comment: ""
-            },
-            {
-                rating: "",
-                username: "",
-                comment: ""
             }
         ]
     },

@@ -313,7 +313,7 @@ main #test div img {
     position: absolute;
     top: 0;
     right: 0;
-    width: 400px;
+    width: 0px;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.495);
     z-index: 2;
@@ -381,7 +381,7 @@ main #test div img {
     color: white;
     font-size: 80px;
     padding: 0 20px;
-    display: none;
+    display: block;
 }
 
 #openBtn p {

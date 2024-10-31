@@ -39,7 +39,6 @@ function init() {
     document.querySelector("#child_discount").addEventListener("click", filterSettings);
     document.querySelector("#senior_discount").addEventListener("click", filterSettings);
     markerMenu = document.querySelector("#markerDesc");
-    markerMenu.style.width = "400px";
     document.querySelector("#closeBtnMarker").addEventListener("click", displayMarkerMenu);
     openBtn = document.querySelector("#openBtn");
     openBtn.addEventListener("click", displayMarkerMenu);

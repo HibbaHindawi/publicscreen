@@ -347,18 +347,18 @@ function displayFilterMenu() {
     let filterWidth = "30%";
     let filterBtnImg = filterBtn.children[0];
     if (filterMenuElem.style.width == filterWidth) {
+        filterBtnImg.src = "images/filter.png";
         filterMenuElem.style.width = "0";
         filterMenuElem.style.borderWidth = "0px";
         dimElem.style.opacity = "0";
         dimElem.style.width = "0";
-        filterBtnImg.src = "images/filter.png";
     }
     else {
+        filterBtnImg.src = "images/filteractive.png";
         filterMenuElem.style.width = filterWidth;
         filterMenuElem.style.borderWidth = "1px";
         dimElem.style.opacity = "0.5";
         dimElem.style.width = "100%";
-        filterBtnImg.src = "images/filteractive.png";
     }
 }
 function displayMarkerMenu() {
@@ -440,10 +440,10 @@ function showSortList() {
     let list = document.querySelector("#sortingDivs");
     let sortBtnimg = sortBtn.children[0];
     if (list.style.visibility === 'visible') {
-        list.style.visibility = 'hidden';
         sortBtnimg.src = "images/sort.png";
+        list.style.visibility = 'hidden';
     } else {
-        list.style.visibility = 'visible';
         sortBtnimg.src = "images/sortactive.png";
+        list.style.visibility = 'visible';
     }
 }

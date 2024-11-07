@@ -3,6 +3,7 @@ let mainAreaElem;
 let sideAreaElem;
 let placeData;
 const excludedIds = ['1', '2', '3', '4'];
+const ids = ['1', '2', '3', '4', '851', '852', '454', '468', '618', '516'];
 
 function init() {
     mainAreaElem = document.querySelector("#mainArea");
@@ -13,7 +14,12 @@ window.addEventListener("load", init);
 
 function getIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
+    if(ids.includes(urlParams.get('id'))){
+        return urlParams.get('id');
+    }
+    else{
+        window.location.href = "information.html?id=1";
+    }
 }
 
 function fetchData() {
